@@ -1,12 +1,48 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import rootReducer from './modules/reducers';
+import BattleSimulatorContainer from './containers/BattleSimulatorContainer';
+import BattleSimulator from './components/BattleSimulator';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const composedEnhancers = composeWithDevTools();
+export const initialState = {
+  hero: {
+    name: 'Hero',
+    img: {
+      alt: 'Hero',
+      src: 'Hero.png',
+    },
+    dice: {
+      dice1: 6,
+      dice2: 6,
+    },
+    hitPoints: 100,
+  },
+  villain: {
+    name: 'Villain',
+    img: {
+      alt: 'Villain',
+      src: 'Villain.webp',
+    },
+    dice: {
+      dice1: 6,
+      dice2: 6,
+    },
+    hitPoints: 100,
+  },
+  gameStatus: {
+    message: 'Press Attack to start playing',
+    winner: null,
+  },
+};
+const store = createStore(rootReducer, initialState, composedEnhancers);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(
+  <Provider store={store}>
+    <BattleSimulatorContainer childComponent={BattleSimulator} />
+  </Provider>,
+  document.getElementById('root')
+);
